@@ -1,25 +1,50 @@
 import Room from "../models/Room.js";
 
-export const getRooms = (req, res) => {
-  console.log("안녕");
-  console.log(req.query);
+export const getRooms = async (req, res) => {
+  const { checkIn, checkOut } = req.query;
+
+  //쿼리가 없을 경우 - 전체 조회
+  if (
+    checkIn === undefined ||
+    checkOut === undefined ||
+    checkIn === "" ||
+    checkout === ""
+  ) {
+    const rooms = await Room.find({});
+    return res.status(200).send(rooms);
+  }
+
+  const rooms = await Room.find({});
+
   return res.status(200).send({ result: "쿼리로 받을 때" });
 };
 
+// CREATE Room : Dummy data
 export const postRooms = async (req, res) => {
   const {
     title,
+    host,
     description,
     roomType,
-    price,
+    pricePerDay,
     amountOfBed,
     rating,
     imageUrl,
-    host,
     location,
+    reservation,
   } = req.body;
   const newRoom = {
-    title: "신축 투룸",
+    title,
+    host,
+    description,
+    roomType,
+    pricePerDay,
+    amountOfBed,
+    rating,
+    imageUrl,
+    location,
+    location,
+    reservation,
   };
 
   await Room.create(newRoom);
