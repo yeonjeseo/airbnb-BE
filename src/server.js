@@ -1,7 +1,7 @@
 import express from "express";
-import renderRouter from "./routers/renderRouter.js";
-import postingsRouter from "./routers/postingsRouter.js";
+import roomsRouter from "./routers/roomsRouter.js";
 import usersRouter from "./routers/usersRouter.js";
+import reservationRouter from "./routers/reservationRouter.js";
 import db from "./db.js";
 
 const app = express();
@@ -10,14 +10,13 @@ const PORT = 4000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.set("view engine", "ejs");
-app.set("views", process.cwd() + "/views");
 // console.log(process.cwd() + "/views");
 
 // serve local files to virtual browser file system
 // app.use("/static", express.static("client"));
 
-app.use("/api/rooms", postingsRouter);
+app.use("/api/reservation", reservationRouter);
+app.use("/api/rooms", roomsRouter);
 app.use("/api/users", usersRouter);
 
 const handleListening = () => {
