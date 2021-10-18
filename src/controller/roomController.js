@@ -5,6 +5,7 @@ import Reseravation from "../models/Reservation.js";
 export const getRooms = async (req, res) => {
   const { checkIn, checkOut } = req.query;
 
+  console.log(checkIn, checkOut);
   //쿼리가 없을 경우 - 전체 조회
   if (
     checkIn === undefined ||
@@ -15,14 +16,19 @@ export const getRooms = async (req, res) => {
     const rooms = await Room.find({});
     return res.status(200).send(rooms);
   }
-
+  // 예약이 불가능한 방 조회
   const roomsNotAvailable = await Reseravation.find({
     $and: [{ start: { $lt: checkOut } }, { end: { $gt: checkIn } }],
   });
 
-  // $nin 쿼리로 NotAvailable에 있는 것을 제외하고 조회
-  // const rooms = await Room.find({})
   console.log(roomsNotAvailable);
+  const notAvailList = roomsNotAvailable.map((room) => room.roomId);
+  // $nin 쿼리로 NotAvailable에있는 것을 제외하고 조회
+  const rooms = await Room.find({
+    _id: { $nin: notAvailList },
+  });
+
+  console.log("사용 가능한 방", rooms);
 
   return res.status(200).send({ result: "쿼리로 받을 때" });
 };
@@ -39,7 +45,6 @@ export const postRooms = async (req, res) => {
     rating,
     imageUrl,
     location,
-    // reservation,
   } = req.body;
 
   const newRoom = {
@@ -52,7 +57,6 @@ export const postRooms = async (req, res) => {
     rating,
     imageUrl,
     location,
-    // reservation,
   };
 
   await Room.create(newRoom);
