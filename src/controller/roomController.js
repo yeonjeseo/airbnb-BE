@@ -1,4 +1,5 @@
 import Room from "../models/Room.js";
+import Review from "../models/Review.js";
 import Reseravation from "../models/Reservation.js";
 
 export const getRooms = async (req, res) => {
@@ -9,17 +10,19 @@ export const getRooms = async (req, res) => {
     checkIn === undefined ||
     checkOut === undefined ||
     checkIn === "" ||
-    checkout === ""
+    checkOut === ""
   ) {
     const rooms = await Room.find({});
     return res.status(200).send(rooms);
   }
 
-  const roomsAvailable = await Reseravation.find({
-    $and: [{ start: { $gt: checkOut } }, { end: { $lt: checkIn } }],
+  const roomsNotAvailable = await Reseravation.find({
+    $and: [{ start: { $lt: checkOut } }, { end: { $gt: checkIn } }],
   });
 
-  console.log(roomsAvailable);
+  // $nin 쿼리로 NotAvailable에 있는 것을 제외하고 조회
+  // const rooms = await Room.find({})
+  console.log(roomsNotAvailable);
 
   return res.status(200).send({ result: "쿼리로 받을 때" });
 };
@@ -36,7 +39,7 @@ export const postRooms = async (req, res) => {
     rating,
     imageUrl,
     location,
-    reservation,
+    // reservation,
   } = req.body;
 
   const newRoom = {
@@ -49,8 +52,7 @@ export const postRooms = async (req, res) => {
     rating,
     imageUrl,
     location,
-    location,
-    reservation,
+    // reservation,
   };
 
   await Room.create(newRoom);
@@ -58,16 +60,27 @@ export const postRooms = async (req, res) => {
   return res.status(200).send(newRoom);
 };
 
-export const getOneRoom = (req, res) => {
-  console.log(req.params);
+// 방 1개와 그 댓글들 조회
+export const getOneRoom = async (req, res) => {
+  const { roomId } = req.params;
 
-  return res.status(200).send({ result: ":roomId로 받을 때" });
+  const room = await Room.findById(roomId);
+  const reviews = await Review.find({ homeId: roomId });
+
+  return res.status(200).send({ result: ":roomId로 받을 때", room, reviews });
 };
 
-export const getRoomsByLocation = (req, res) => {
+export const getRoomsByFilter = async (req, res) => {
+  const filter = req.query;
+
+  // const rooms = await Room.find({
+  //   filter: {
+  //     $in: [filter],
+  //   },
+  // });
   return res.status(200).send();
 };
 
-export const getRoomsByFilter = (req, res) => {
+export const getRoomsByLocation = (req, res) => {
   return res.status(200).send();
 };
