@@ -1,22 +1,17 @@
-// import express from "express";
-// import {
-//   postPostings,
-//   patchPostings,
-//   deletePostings,
-//   readAllPostings,
-//   postComment,
-//   getComments,
-//   deleteComment,
-//   patchComment,
-// } from "../controller/postingController.js";
-// import { authMiddleware } from "../middlewares/authMiddleware.js";
-// const postingRouter = express.Router();
+import express from "express";
+import reviewsRouter from "./reviewsRouter.js";
+import {
+  getRooms,
+  postRooms,
+  getOneRoom,
+} from "../controller/roomController.js";
 
-// postingRouter
-//   .route("/:id/comments")
-//   .post(authMiddleware, postComment)
-//   .get(authMiddleware, getComments)
-//   .delete(authMiddleware, deleteComment)
-//   .patch(authMiddleware, patchComment);
+const roomsRouter = express.Router();
 
-// export default postingRouter;
+roomsRouter.route("/").get(getRooms).post(postRooms);
+
+roomsRouter.route("/:roomId").get(getOneRoom);
+
+roomsRouter.use("/:roomId/reviews", reviewsRouter);
+
+export default roomsRouter;
