@@ -1,4 +1,5 @@
 import Room from "../models/Room.js";
+import Reseravation from "../models/Reservation.js";
 
 export const getRooms = async (req, res) => {
   const { checkIn, checkOut } = req.query;
@@ -14,7 +15,11 @@ export const getRooms = async (req, res) => {
     return res.status(200).send(rooms);
   }
 
-  const rooms = await Room.find({});
+  const roomsAvailable = await Reseravation.find({
+    $and: [{ start: { $gt: checkOut } }, { end: { $lt: checkIn } }],
+  });
+
+  console.log(roomsAvailable);
 
   return res.status(200).send({ result: "쿼리로 받을 때" });
 };
@@ -33,6 +38,7 @@ export const postRooms = async (req, res) => {
     location,
     reservation,
   } = req.body;
+
   const newRoom = {
     title,
     host,
@@ -56,4 +62,12 @@ export const getOneRoom = (req, res) => {
   console.log(req.params);
 
   return res.status(200).send({ result: ":roomId로 받을 때" });
+};
+
+export const getRoomsByLocation = (req, res) => {
+  return res.status(200).send();
+};
+
+export const getRoomsByFilter = (req, res) => {
+  return res.status(200).send();
 };
