@@ -2,8 +2,9 @@ import mongoose from "mongoose";
 
 const reservationSchema = new mongoose.Schema({
   roomId: { type: mongoose.Types.ObjectId },
-  bookerId: { type: mongoose.Types.ObjectId },
-  amountOfGuest: { type: Number },
+  bookerId: { type: String },
+  // bookerId: { type: mongoose.Types.ObjectId },
+  amountOfGuests: { type: Number },
   start: { type: String },
   end: { type: String },
 });
