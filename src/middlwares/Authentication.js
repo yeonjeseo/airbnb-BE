@@ -20,8 +20,8 @@ module.exports = (req, res, next) => {
   }
 
   try {
-    const { userObjectId } = jwt.verify(tokenValue, "artube-secret-key");
-    User.findById(userObjectId).then((user) => {
+    const { fullname } = jwt.verify(tokenValue, "airbnb-secret-key");
+    User.findById(fullname).then((user) => {
       res.locals.user = user;
       next();
     }).catch(err=>console.log(err))
