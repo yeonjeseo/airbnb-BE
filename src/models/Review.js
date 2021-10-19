@@ -3,20 +3,20 @@ import mongoose from "mongoose";
 // const reviewSchema = new mongoose.Schema({
 
 const { Schema } = mongoose;
+
 const reviewSchema = new Schema({
-  homeId: {
-    type: String,
-  },
   userId: {
     type: String,
   },
-  content: {
+  comment: {
     type: String,
     required: true,
   },
+  upperPost: {
+    type: String,
+  },
   createdAt: {
     type: Date,
-    default: Date.now(),
   },
 });
 
