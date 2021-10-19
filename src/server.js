@@ -3,6 +3,7 @@ import roomsRouter from "./routers/roomsRouter.js";
 import usersRouter from "./routers/usersRouter.js";
 import reservationRouter from "./routers/reservationRouter.js";
 import db from "./db.js";
+import reviewsRouter from "./routers/reviewsRouter.js";
 
 const app = express();
 const PORT = 4000;
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/reservation", reservationRouter);
 app.use("/api/rooms", roomsRouter);
 app.use("/api/users", usersRouter);
+app.use("/api/reviews",reviewsRouter);
 
 const handleListening = () => {
   console.log(`Server listening on port http://localhost:${PORT}😀`);
