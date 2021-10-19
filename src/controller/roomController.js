@@ -2,10 +2,14 @@ import Room from "../models/Room.js";
 import Review from "../models/Review.js";
 import Reseravation from "../models/Reservation.js";
 
-export const getRooms = async (req, res) => {
-  const { checkIn, checkOut } = req.query;
+export const getRoomsFlexible = async (req, res) => {
+  const { checkin, checkout, guests, roomType } = req.query;
+};
 
-  console.log(checkIn, checkOut);
+export const getRooms = async (req, res) => {
+  const { checkIn, checkOut, guests } = req.query;
+
+  console.log(checkIn, checkOut, guests);
   //쿼리가 없을 경우 - 전체 조회
   if (
     checkIn === undefined ||
@@ -13,8 +17,9 @@ export const getRooms = async (req, res) => {
     checkIn === "" ||
     checkOut === ""
   ) {
-    const rooms = await Room.find({});
-    return res.status(200).send(rooms);
+    //방 침대 개수가 사람 수보다 많아야 함.
+    const rooms = await Room.find({ amountOfBed: { $gte: guests } });
+    return res.status(200).send({ result: "success", rooms });
   }
   // 예약이 불가능한 방 조회
   const roomsNotAvailable = await Reseravation.find({
@@ -22,15 +27,25 @@ export const getRooms = async (req, res) => {
   });
 
   console.log(roomsNotAvailable);
+  // $nin 쓰기 위해 roomId만 추출해서 list 생성
   const notAvailList = roomsNotAvailable.map((room) => room.roomId);
   // $nin 쿼리로 NotAvailable에있는 것을 제외하고 조회
   const rooms = await Room.find({
-    _id: { $nin: notAvailList },
+    $and: [
+      {
+        _id: { $nin: notAvailList },
+      },
+      {
+        amountOfBed: {
+          $gte: guests,
+        },
+      },
+    ],
   });
 
   console.log("사용 가능한 방", rooms);
 
-  return res.status(200).send({ result: "쿼리로 받을 때" });
+  return res.status(200).send({ result: "success", rooms });
 };
 
 // CREATE Room : Dummy data
@@ -39,24 +54,28 @@ export const postRooms = async (req, res) => {
     title,
     host,
     description,
-    roomType,
+    category,
     pricePerDay,
     amountOfBed,
     rating,
     imageUrl,
     location,
+    languages,
+    rules,
   } = req.body;
 
   const newRoom = {
     title,
     host,
     description,
-    roomType,
+    category,
     pricePerDay,
     amountOfBed,
     rating,
     imageUrl,
     location,
+    languages,
+    rules,
   };
 
   await Room.create(newRoom);
@@ -74,6 +93,15 @@ export const getOneRoom = async (req, res) => {
   return res.status(200).send({ result: ":roomId로 받을 때", room, reviews });
 };
 
+// list 1
+// export const getRoomsByLocation = (req, res) => {
+//   const { scale } = req.query;
+//   return res.status(200).send({ scale });
+// };
+
+/* list2 
+
+*/
 export const getRoomsByFilter = async (req, res) => {
   const filter = req.query;
 
@@ -82,9 +110,5 @@ export const getRoomsByFilter = async (req, res) => {
   //     $in: [filter],
   //   },
   // });
-  return res.status(200).send();
-};
-
-export const getRoomsByLocation = (req, res) => {
   return res.status(200).send();
 };

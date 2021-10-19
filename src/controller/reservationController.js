@@ -7,7 +7,7 @@ export const postReservation = async (req, res) => {
     body: { roomId, start, end, amountOfGuests },
     // user: { userId },
   } = req;
-
+  /* Reservation을 조회해서 마찬가지로 $gt $lt 써서 예약이 없을 경우 length === 0 일때 예약 생성 필요 */
   const reservation = {
     roomId,
     bookerId: userId,
