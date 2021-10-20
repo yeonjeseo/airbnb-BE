@@ -5,7 +5,7 @@ import mongoose from "mongoose";
 //get, post, patch, delete + Review 고치기
 // 변수명 전체 변경 예정
 
-export const getReview = async (req, res) => {
+export const getReviews = async (req, res) => {
   const { homeId, reviewId } = req.params;
   try {
     const review = await Comment.find({ homId: postId }).sort("-_id");
