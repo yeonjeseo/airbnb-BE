@@ -15,8 +15,14 @@ const roomSchema = new Schema({
     lat: { type: Number },
     lon: { type: Number },
   },
-  languages: [{ type: String }], // 한국어 영어 독일어
-  rules: [{ type: String }], // 반려동물, 흡연
+  english: { type: Boolean },
+  korean: { type: Boolean },
+  deutch: { type: Boolean },
+  pet: { type: Boolean },
+  smoking: { type: Boolean },
+  locationName: { type: String },
+  distance: { type: Number },
+  available: { type: String },
 });
 
 const Room = mongoose.model("Room", roomSchema);
