@@ -1,6 +1,5 @@
 import Review from "../models/Review.js";
 
-
 // import { authMiddleware} from "../middlwares/Authentication";
 //get, post, patch, delete + Review 고치기
 // 변수명 전체 변경 예정
@@ -56,7 +55,6 @@ export const patchReviews = async (req, res) => {
     res.status(400).send({ result: "게시글 존재하지 않음" });
   }
 };
-
 
 export const deleteReviews = async (req, res) => {
   const { reviewId } = req.params;
