@@ -4,10 +4,12 @@ import usersRouter from "./routers/usersRouter.js";
 import reservationRouter from "./routers/reservationRouter.js";
 import db from "./db.js";
 import reviewsRouter from "./routers/reviewsRouter.js";
+import cors from "cors";
 
 const app = express();
 const PORT = 4000;
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -19,12 +21,10 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/reservation", reservationRouter);
 app.use("/api/rooms", roomsRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/reviews",reviewsRouter);
+app.use("/api/reviews", reviewsRouter);
 
 const handleListening = () => {
   console.log(`Server listening on port http://localhost:${PORT}😀`);
 };
 
 app.listen(PORT, handleListening);
-
-
