@@ -2,7 +2,7 @@ import express from "express";
 
 // import User from "../models/User.js";
 // import bcrypt from "bcrypt";
-// import  jwtToken  from "jsonwebtoken"; 
+// import  jwtToken  from "jsonwebtoken";
 // import { boolean } from "yargs";
 // import { Content } from "../models/Room.js";
 // import { authMiddleware} from "../middlwares/Authentication.js";
@@ -16,15 +16,15 @@ import {
   auth_phone,
   auth_email,
   exist_phone,
-  exist_email
+  exist_email,
 } from "../controller/userController.js";
 const usersRouter = express.Router();
 
 usersRouter.route("/signup").post(signup);
-usersRouter.route("/auth_phone").get(auth_phone);
-usersRouter.route("/auth_email").get(auth_email);
-usersRouter.route("/exist_phone").get(exist_phone);
-usersRouter.route("/exist_email").get(exist_email);
+usersRouter.route("/auth_phone").post(auth_phone);
+usersRouter.route("/auth_email").post(auth_email);
+usersRouter.route("/exist_phone").post(exist_phone);
+usersRouter.route("/exist_email").post(exist_email);
 
 export default usersRouter;
 
@@ -67,14 +67,14 @@ export default usersRouter;
 //       });
 
 //     const hashedPassword = await bcrypt.hash(pinNum, 5);
-    
+
 //     // const string_birthDt = String(birthDt); //스트링 값으로 변환, 이미ㅣ db에는 스트링으로 저장됨
 
 //     const newUser = {
 //       fullname,
 //       email,
 //       phoneNum,
-//       birthDt, 
+//       birthDt,
 //       pinNum: hashedPassword,
 //     };
 //     // await User.save(newUser); //create에서 변경
@@ -91,7 +91,6 @@ export default usersRouter;
 //   }
 // });
 
-
 //핸드폰로그인
 // userRouter.get("/auth_phone", async (req, res) => {
 //   const { phoneNum, pinNum } = req.body;
@@ -103,7 +102,7 @@ export default usersRouter;
 //     return res
 //       .status(400)
 //       .send({ result: "failure", msg: "비밀번호가 틀립니다." });
-//   const { _id } = user; 
+//   const { _id } = user;
 //   const token = jwtToken.sign({ fullname: user.fullname }, 'airbnb-secret-key')
 //   return res.status(200).send({ result: "success", msg: "로그인 완료", token });
 // } catch (error) {
@@ -112,7 +111,6 @@ export default usersRouter;
 //     .status(405)
 //     .send({ result: "failure", msg: "DB 정보 조회 실패" });
 // }});
-
 
 //이메일로그인
 // userRouter.get("/auth_email", async (req, res) => {
@@ -125,7 +123,7 @@ export default usersRouter;
 //     return res
 //       .status(400)
 //       .send({ result: "failure", msg: "아이디 혹은 비밀번호가 틀립니다." });
-//   const { _id } = user;  
+//   const { _id } = user;
 //   const token = jwtToken.sign({ fullname: user.fullname }, 'airbnb-secret-key')
 //   return res.status(200).send({ result: "success", msg: "로그인 완료", token });
 // } catch (error) {
@@ -135,17 +133,16 @@ export default usersRouter;
 //     .send({ result: "failure", msg: "DB 정보 조회 실패" });
 // }});
 
-
 //휴대폰번호로 회원 조회
 // userRouter.get("/exist_phone", async (req, res) =>{
 //   const {phoneNum} = req.body;
 // try{
-//   const user = await User.findOne({ phoneNum }); 
+//   const user = await User.findOne({ phoneNum });
 //   if (!user)
 //     return res
 //     .status(406)
 //     .send( {result: "failure", isExisting : false})
-  
+
 //   return res.status(200).send({ result: "success", isExisting : true});
 //   }catch (error) {
 //     console.log(error);
@@ -154,24 +151,22 @@ export default usersRouter;
 //       .send({ result: "failure", msg: "DB 정보 조회 실패" });
 //   }});
 
-  // //이메일로 회원 조회
-  // userRouter.get("/exist_email", async (req, res) =>{
-  //   const {email} = req.body;
-  // try{
-  //   const user = await User.findOne({ email }); 
-  //   if (!user)
-  //     return res
-  //     .status(406)
-  //     .send( {result: "failure", isExisting : false})
-    
-  //   return res.status(200).send({ result: "success", isExisting : true});
-  // }catch (error) {
-  //   console.log(error);
-  //   return res
-  //     .status(405)
-  //     .send({ result: "failure", msg: "DB 정보 조회 실패" });
-  // }});
+// //이메일로 회원 조회
+// userRouter.get("/exist_email", async (req, res) =>{
+//   const {email} = req.body;
+// try{
+//   const user = await User.findOne({ email });
+//   if (!user)
+//     return res
+//     .status(406)
+//     .send( {result: "failure", isExisting : false})
 
-
+//   return res.status(200).send({ result: "success", isExisting : true});
+// }catch (error) {
+//   console.log(error);
+//   return res
+//     .status(405)
+//     .send({ result: "failure", msg: "DB 정보 조회 실패" });
+// }});
 
 //콜백
