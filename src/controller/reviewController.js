@@ -1,5 +1,7 @@
 import Review from "../models/Review.js";
 import mongoose from "mongoose";
+import Room from "../models/Room.js";
+
 
 // import { authMiddleware} from "../middlwares/Authentication";
 //get, post, patch, delete + Review 고치기
@@ -8,51 +10,77 @@ import mongoose from "mongoose";
 export const getReviews = async (req, res) => {
   const { homeId, reviewId } = req.params;
   try {
-    const review = await Comment.find({ homId: postId }).sort("-_id");
-    res.status(200).send({ comment: comment });
+    const review = await Review.find({ upperPost: roomId }).sort("-_id");
+    res.status(200).send({ review: review });
   } catch (err) {
-    res.status(400).send({ err: "코맨트 에러" });
+    res.status(400).send({ err: "리뷰 에러" });
   }
 };
 
 // postingID => 변경
 export const postReviews = async (req, res) => {
-  const { postingId } = req.params;
+  const { roomId } = req.params;
+  const { userId, review } = req.body;
+  let newDate = new Date();
+  let date = newDate.toFormat("YYYY-MM-DD");
+
   try {
-    await Comment.find({ postingID: postingId });
-    res.sendStatus(200);
-  } catch (error) {
-    console.error(error);
-    res.sendStatus(400);
+    await Review.create({
+      userId: userId,
+      review: review,
+      upperPost: roomId,
+      reviewTime: date,
+      rating: rating,
+    });
+
+    const reviews = await Review.find({ roomId });
+    let sum = 0;
+    reviews.forEach((review) => {
+      sum += review.rating;
+    });
+    const avg = sum / reviews.length;
+    await Room.findByIdAndUpdate(roomId, {$set:{rating:avg}})
+    res.status(200).send({ result: "success" });
+  } catch (err) {
+    console.log(err);
+    res.status(400).send({ err: "err" });
   }
 };
 
 export const patchReviews = async (req, res) => {
-  const { postingId } = req.params;
-  const { text } = req.body;
-  try {
-    await Comment.findOneAndUpdate(
-      { postingID: postingId, authorID: userobjectId },
-      { text }
-    );
-    res.sendStatus(200);
-  } catch (error) {
-    console.error(error);
-    res.sendStatus(400);
+  const { reviewId } = req.params;
+  const { phoneNum, review } = req.body;
+
+  const isReview = await Review.findById(reviewId);
+  console.log(isReview);
+  if (isReview) {
+    if (true) {
+      await Review.updateOne(
+        { reviewId },
+        { $set: { phoneNum: phoneNum, review: review } }
+      );
+      res.status(200).send({ result: "success" });
+    } else {
+      res.status(400).send({ result: "err" });
+    }
+  } else {
+    res.status(400).send({ result: "게시글이 존재하지 않음" });
   }
 };
 
 export const deleteReviews = async (req, res) => {
-  const { postingId } = req.params;
-  try {
-    await Comment.findOneAndRemove({
-      postingID: postingId,
-      authorID: userobjectId,
-    });
-    res.sendStatus(200);
-  } catch (error) {
-    console.error(error);
-    res.sendStatus(400);
+  const { reviewId } = req.params;
+  const isReview = await Review.findById(reviewId);
+  if (isReview) {
+    //nickname == ispost["nickname"]
+    if (true) {
+      await Review.deleteOne({ reviewId });
+      res.status(200).send({ result: "success" });
+    } else {
+      res.status(400).send({ result: "작성자 본인이 아님" });
+    }
+  } else {
+    res.status(400).send({ result: "게시글이 존재하지 않음" });
   }
 };
 
