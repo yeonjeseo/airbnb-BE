@@ -130,7 +130,7 @@ export const postRooms = async (req, res) => {
 export const getOneRoom = async (req, res) => {
   const { roomId } = req.params;
   const room = await Room.findById(roomId);
-  const reviews = await Review.find({ homeId: roomId });
+  const reviews = await Review.find({ homeId: roomId }).sort({ createdAt: -1 });
 
   return res.status(200).send({ result: ":roomId로 받을 때", room, reviews });
 };
