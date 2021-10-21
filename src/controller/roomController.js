@@ -21,7 +21,7 @@ export const getRoomsFlexible = async (req, res) => {
     - 쿼리 여러개 처리 - ok
   */
   const pageCnt = Number(page);
-  const limit = 10;
+  const limit = 5;
   const offset = (pageCnt - 1) * limit;
 
   // reduce???
@@ -51,26 +51,37 @@ export const getRoomsFlexible = async (req, res) => {
       //roomId만 추출
       notAvailList = roomsNotAvailable.map((room) => room.roomId);
     }
-    console.log(`불가능 리스트 : ${notAvailList}`);
     //findQuery가 비어있을 경우 $where 사용 불가능하므로 예외 처리
     //여기는 흠 list1일 경우가 될 거니까
     if (findQuery === "") {
+      const roomsTotal = await Room.find({ _id: { $nin: notAvailList } });
       const rooms = await Room.find({ _id: { $nin: notAvailList } })
         .limit(limit)
         .skip(offset)
         .sort({ distance: 1 });
-      const totalPageCnt = parseInt(rooms.length / limit) + 1;
+      // const totalPageCnt = parseInt(roomsTotal.length / limit);
+
+      const totalPageCnt =
+        roomsTotal.length % limit == 0
+          ? parseInt(roomsTotal.length / limit)
+          : parseInt(roomsTotal.length / limit) + 1;
       return res
         .status(200)
         .send({ result: "success", rooms, totalPageCnt, page });
     }
 
+    const roomsTotal = await Room.find({
+      $and: [{ $where: findQuery }, { _id: { $nin: notAvailList } }],
+    });
     const rooms = await Room.find({
       $and: [{ $where: findQuery }, { _id: { $nin: notAvailList } }],
     })
       .limit(limit)
       .skip(offset);
-    const totalPageCnt = parseInt(rooms.length / limit);
+    const totalPageCnt =
+      roomsTotal.length % limit == 0
+        ? parseInt(roomsTotal.length / limit)
+        : parseInt(roomsTotal.length / limit) + 1;
 
     return res.status(200).send({ result: "success", rooms, totalPageCnt });
   } catch (error) {
