@@ -59,8 +59,10 @@ export const getRoomsFlexible = async (req, res) => {
         .limit(limit)
         .skip(offset)
         .sort({ distance: 1 });
-      const totalPageCnt = parseInt(rooms.length / limit);
-      return res.status(200).send({ result: "success", rooms, totalPageCnt });
+      const totalPageCnt = parseInt(rooms.length / limit) + 1;
+      return res
+        .status(200)
+        .send({ result: "success", rooms, totalPageCnt, page });
     }
 
     const rooms = await Room.find({
