@@ -1,7 +1,1 @@
-let rule = ["pet", "smoking"];
-
-let room = ["pet"];
-
-let result = rule.forEach((elem) => {
-  console.log(room.includes(elem));
-});
+console.log("2021-11-01" > "2021-10-08");
