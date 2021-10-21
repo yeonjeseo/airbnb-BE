@@ -4,10 +4,10 @@ import Reseravation from "../models/Reservation.js";
 
 export const getRoomsFlexible = async (req, res) => {
   const {
+    category,
     check_in,
     check_out,
     guests,
-    category,
     english,
     korean,
     deutch,

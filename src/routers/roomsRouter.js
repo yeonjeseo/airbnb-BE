@@ -10,6 +10,7 @@ const roomsRouter = express.Router();
 
 roomsRouter.route("/").get(getRoomsFlexible).post(postRooms);
 roomsRouter.route("/:roomId").get(getOneRoom);
-roomsRouter.use("/:roomId/reviews", reviewsRouter);
+// roomsRouter.use("/:roomId/reviews", reviewsRouter);
+roomsRouter.route("/:roomId/reviews").get().post().delete().patch();
 
 export default roomsRouter;
