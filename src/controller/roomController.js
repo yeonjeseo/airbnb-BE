@@ -36,40 +36,45 @@ export const getRoomsFlexible = async (req, res) => {
 
   //삼항 연산자 ??? --
 
-  let queryArray = findQuery.split(" ");
-  if (queryArray[0] == "&&") {
-    queryArray.shift();
-    findQuery = queryArray.join(" ");
-  }
-  let notAvailList = [];
-  if (check_in && check_out) {
-    //체크인 체크아웃이 있으면 예약불가능한 방을 조회
-    const roomsNotAvailable = await Reseravation.find({
-      $and: [{ start: { $lt: check_out } }, { end: { $gt: check_in } }],
-    });
-    //roomId만 추출
-    notAvailList = roomsNotAvailable.map((room) => room.roomId);
-  }
-  console.log(`불가능 리스트 : ${notAvailList}`);
-  //findQuery가 비어있을 경우 $where 사용 불가능하므로 예외 처리
-  //여기는 흠 list1일 경우가 될 거니까
-  if (findQuery === "") {
-    const rooms = await Room.find({ _id: { $nin: notAvailList } })
+  try {
+    let queryArray = findQuery.split(" ");
+    if (queryArray[0] == "&&") {
+      queryArray.shift();
+      findQuery = queryArray.join(" ");
+    }
+    let notAvailList = [];
+    if (check_in && check_out) {
+      //체크인 체크아웃이 있으면 예약불가능한 방을 조회
+      const roomsNotAvailable = await Reseravation.find({
+        $and: [{ start: { $lt: check_out } }, { end: { $gt: check_in } }],
+      });
+      //roomId만 추출
+      notAvailList = roomsNotAvailable.map((room) => room.roomId);
+    }
+    console.log(`불가능 리스트 : ${notAvailList}`);
+    //findQuery가 비어있을 경우 $where 사용 불가능하므로 예외 처리
+    //여기는 흠 list1일 경우가 될 거니까
+    if (findQuery === "") {
+      const rooms = await Room.find({ _id: { $nin: notAvailList } })
+        .limit(limit)
+        .skip(offset)
+        .sort({ distance: 1 });
+      const totalPageCnt = parseInt(rooms.length / limit);
+      return res.status(200).send({ result: "success", rooms, totalPageCnt });
+    }
+
+    const rooms = await Room.find({
+      $and: [{ $where: findQuery }, { _id: { $nin: notAvailList } }],
+    })
       .limit(limit)
-      .skip(offset)
-      .sort({ distance: 1 });
+      .skip(offset);
     const totalPageCnt = parseInt(rooms.length / limit);
+
     return res.status(200).send({ result: "success", rooms, totalPageCnt });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({ msg: "오류" });
   }
-
-  const rooms = await Room.find({
-    $and: [{ $where: findQuery }, { _id: { $nin: notAvailList } }],
-  })
-    .limit(limit)
-    .skip(offset);
-  const totalPageCnt = parseInt(rooms.length / limit);
-
-  return res.status(200).send({ result: "success", rooms, totalPageCnt });
 };
 
 // CREATE Room : Dummy data
