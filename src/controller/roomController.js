@@ -83,7 +83,9 @@ export const getRoomsFlexible = async (req, res) => {
         ? parseInt(roomsTotal.length / limit)
         : parseInt(roomsTotal.length / limit) + 1;
 
-    return res.status(200).send({ result: "success", rooms, totalPageCnt });
+    return res
+      .status(200)
+      .send({ result: "success", rooms, totalPageCnt, page });
   } catch (error) {
     console.log(error);
     return res.status(500).send({ msg: "오류" });
