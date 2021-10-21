@@ -34,14 +34,13 @@ export const getRoomsFlexible = async (req, res) => {
   if (pet == "true") findQuery += `&& this.pet == ${true} `;
   if (smoking == "true") findQuery += `&& this.smoking == ${true} `;
 
-  //삼항 연산자 ??? --
+  let queryArray = findQuery.split(" ");
+  if (queryArray[0] == "&&") {
+    queryArray.shift();
+    findQuery = queryArray.join(" ");
+  }
 
   try {
-    let queryArray = findQuery.split(" ");
-    if (queryArray[0] == "&&") {
-      queryArray.shift();
-      findQuery = queryArray.join(" ");
-    }
     let notAvailList = [];
     if (check_in && check_out) {
       //체크인 체크아웃이 있으면 예약불가능한 방을 조회
@@ -88,7 +87,7 @@ export const getRoomsFlexible = async (req, res) => {
       .send({ result: "success", rooms, totalPageCnt, page });
   } catch (error) {
     console.log(error);
-    return res.status(500).send({ msg: "오류" });
+    return res.status(400).send({ result: "failure" });
   }
 };
 
@@ -142,8 +141,14 @@ export const postRooms = async (req, res) => {
 // 방 1개와 그 댓글들 조회
 export const getOneRoom = async (req, res) => {
   const { roomId } = req.params;
-  const room = await Room.findById(roomId);
-  const reviews = await Review.find({ homeId: roomId }).sort({ createdAt: -1 });
-
-  return res.status(200).send({ result: ":roomId로 받을 때", room, reviews });
+  try {
+    const room = await Room.findById(roomId);
+    const reviews = await Review.find({ homeId: roomId }).sort({
+      createdAt: -1,
+    });
+    return res.status(200).send({ result: "success", room, reviews });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).send({ result: "failure" });
+  }
 };
