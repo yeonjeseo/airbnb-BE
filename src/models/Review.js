@@ -8,15 +8,20 @@ const reviewSchema = new Schema({
   userId: {
     type: String,
   },
-  comment: {
+  review: {
     type: String,
     required: true,
   },
   upperPost: {
     type: String,
   },
+  rating: {
+    type: Number,
+    
+  },
   createdAt: {
     type: String,
+    required: true,
   },
 });
 
