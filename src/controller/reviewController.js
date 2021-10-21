@@ -1,14 +1,15 @@
 import Review from "../models/Review.js";
+import mongoose from "mongoose";
 
 // import { authMiddleware} from "../middlwares/Authentication";
 //get, post, patch, delete + Review 고치기
 // 변수명 전체 변경 예정
 
-export const getReviews = async (req, res) => {
-  const { roomId } = req.params;
+export const getReview = async (req, res) => {
+  const { homeId, reviewId } = req.params;
   try {
-    const review = await Review.find({ upperPost: roomId }).sort("-_id");
-    res.status(200).send({ review: review });
+    const review = await Comment.find({ homId: postId }).sort("-_id");
+    res.status(200).send({ comment: comment });
   } catch (err) {
     res.status(400).send({ err: "코맨트 에러" });
   }
@@ -16,59 +17,42 @@ export const getReviews = async (req, res) => {
 
 // postingID => 변경
 export const postReviews = async (req, res) => {
-  const { roomId } = req.params;
-  const { phoneNum, review } = req.body;
-  let newDate = new Date();
-  let date = newDate.toFormat("YYYY-MM-DD HH24:MI:SS");
-
+  const { postingId } = req.params;
   try {
-    await Review.create({
-      phoneNum: phoneNum,
-      review: review,
-      upperPost: roomId,
-      reviewTime: date,
-    });
-    res.status(200).send({ result: "success" });
-  } catch (err) {
-    console.log(err);
-    res.status(400).send({ err: "err" });
+    await Comment.find({ postingID: postingId });
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(400);
   }
 };
 
 export const patchReviews = async (req, res) => {
-  const { reviewId } = req.params;
-  const { phoneNum, review } = req.body;
-
-  const isreview = await Review.findById(reviewId);
-  console.log(isreview);
-  if (isreview) {
-    if (true) {
-      await Review.updateOne(
-        { reviewId },
-        { $set: { phoneNum: phoneNum, review } }
-      );
-      res.status(200).send({ result: "success" });
-    } else {
-      res.status(400).send({ result: "err" });
-    }
-  } else {
-    res.status(400).send({ result: "게시글 존재하지 않음" });
+  const { postingId } = req.params;
+  const { text } = req.body;
+  try {
+    await Comment.findOneAndUpdate(
+      { postingID: postingId, authorID: userobjectId },
+      { text }
+    );
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(400);
   }
 };
 
 export const deleteReviews = async (req, res) => {
-  const { reviewId } = req.params;
-  const isreview = await Review.findById(reviewId);
-  if (isreview) {
-    //phoneNum == ispost["phoneNum"]
-    if (true) {
-      await Review.deleteOne({ reviewId });
-      res.status(200).send({ result: "success" });
-    } else {
-      res.status(400).send({ result: "사용자 본인이 아님" });
-    }
-  } else {
-    res.status(400).send({ result: "게시글 존재하지 않음" });
+  const { postingId } = req.params;
+  try {
+    await Comment.findOneAndRemove({
+      postingID: postingId,
+      authorID: userobjectId,
+    });
+    res.sendStatus(200);
+  } catch (error) {
+    console.error(error);
+    res.sendStatus(400);
   }
 };
 
