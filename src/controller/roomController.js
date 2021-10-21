@@ -22,8 +22,9 @@ export const getRoomsFlexible = async (req, res) => {
   */
   const pageCnt = Number(page);
   const limit = 5;
-  const offset = (page - 1) * limit;
+  const offset = (pageCnt - 1) * limit;
 
+  // reduce???
   let findQuery = "";
   if (category) findQuery += `this.category == '${category}' `;
   if (guests) findQuery += `&& this.people > ${guests} `;
@@ -32,13 +33,20 @@ export const getRoomsFlexible = async (req, res) => {
   if (deutch == "true") findQuery += `&& this.deutch == ${true} `;
   if (pet == "true") findQuery += `&& this.pet == ${true} `;
   if (smoking == "true") findQuery += `&& this.smoking == ${true} `;
-  console.log(findQuery);
+
+  let queryArray = findQuery.split(" ");
+  if (queryArray[0] == "&&") {
+    queryArray.shift();
+    findQuery = queryArray.join(" ");
+  }
 
   let notAvailList;
   if (check_in && check_out) {
+    //체크인 체크아웃이 있으면 예약불가능한 방을 조회
     const roomsNotAvailable = await Reseravation.find({
       $and: [{ start: { $lt: check_out } }, { end: { $gt: check_in } }],
     });
+    //roomId만 추출
     notAvailList = roomsNotAvailable.map((room) => room.roomId);
   }
   const rooms = await Room.find({
@@ -56,8 +64,8 @@ export const postRooms = async (req, res) => {
     host,
     description,
     category,
-    pricePerDay,
-    amountOfBed,
+    price,
+    people,
     rating,
     imageUrl,
     location,
@@ -76,8 +84,8 @@ export const postRooms = async (req, res) => {
     host,
     description,
     category,
-    pricePerDay,
-    amountOfBed,
+    price,
+    people,
     rating,
     imageUrl,
     location,

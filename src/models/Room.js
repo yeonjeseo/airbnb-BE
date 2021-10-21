@@ -7,8 +7,8 @@ const roomSchema = new Schema({
   host: { type: String },
   description: { type: String },
   category: { type: String }, //멋진 수영장, 농장, 성, 해변근처, 캠핑카
-  pricePerDay: { type: Number },
-  amountOfBed: { type: Number },
+  price: { type: Number },
+  people: { type: Number },
   rating: { type: Number },
   imageUrl: [{ type: String }],
   location: {
