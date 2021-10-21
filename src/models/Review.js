@@ -1,12 +1,10 @@
 import mongoose from "mongoose";
-
 // const reviewSchema = new mongoose.Schema({
-
 const { Schema } = mongoose;
 
 const reviewSchema = new Schema({
   userId: {
-    type: mongoose.Types.ObjectId,
+    type: String,
   },
   review: {
     type: String,
