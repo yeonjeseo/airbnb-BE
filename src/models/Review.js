@@ -6,7 +6,7 @@ const { Schema } = mongoose;
 
 const reviewSchema = new Schema({
   userId: {
-    type: String,
+    type: mongoose.Types.ObjectId,
   },
   review: {
     type: String,
@@ -17,7 +17,6 @@ const reviewSchema = new Schema({
   },
   rating: {
     type: Number,
-    
   },
   createdAt: {
     type: String,

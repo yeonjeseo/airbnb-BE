@@ -2,13 +2,13 @@ import Review from "../models/Review.js";
 import mongoose from "mongoose";
 import Room from "../models/Room.js";
 
-
 // import { authMiddleware} from "../middlwares/Authentication";
 //get, post, patch, delete + Review 고치기
 // 변수명 전체 변경 예정
 
 export const getReviews = async (req, res) => {
   const { homeId, reviewId } = req.params;
+
   try {
     const review = await Review.find({ upperPost: roomId }).sort("-_id");
     res.status(200).send({ review: review });
@@ -21,15 +21,19 @@ export const getReviews = async (req, res) => {
 export const postReviews = async (req, res) => {
   const { roomId } = req.params;
   const { userId, review } = req.body;
-  let newDate = new Date();
-  let date = newDate.toFormat("YYYY-MM-DD");
+
+  const date = new Date();
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  const dateString = [year, month, day].join("-");
 
   try {
     await Review.create({
       userId: userId,
       review: review,
       upperPost: roomId,
-      reviewTime: date,
+      createdAt: dateString,
       rating: rating,
     });
 
@@ -39,7 +43,7 @@ export const postReviews = async (req, res) => {
       sum += review.rating;
     });
     const avg = sum / reviews.length;
-    await Room.findByIdAndUpdate(roomId, {$set:{rating:avg}})
+    await Room.findByIdAndUpdate(roomId, { $set: { rating: avg } });
     res.status(200).send({ result: "success" });
   } catch (err) {
     console.log(err);
