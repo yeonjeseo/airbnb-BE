@@ -49,12 +49,24 @@ export const getRoomsFlexible = async (req, res) => {
     //roomId만 추출
     notAvailList = roomsNotAvailable.map((room) => room.roomId);
   }
+
+  if (findQuery === "") {
+    const rooms = await Room.find({ _id: { $nin: notAvailList } })
+      .limit(limit)
+      .skip(offset);
+    const totalPageCnt = parseInt(rooms.length / limit);
+    return res.status(200).send({ result: "success", rooms, totalPageCnt });
+  }
+
   const rooms = await Room.find({
     $and: [{ $where: findQuery }, { _id: { $nin: notAvailList } }],
   })
     .limit(limit)
     .skip(offset);
-  return res.status(200).send({ result: "success", rooms });
+
+  const totalPageCnt = parseInt(rooms.length / limit);
+
+  return res.status(200).send({ result: "success", rooms, totalPageCnt });
 };
 
 // CREATE Room : Dummy data
