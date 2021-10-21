@@ -11,10 +11,6 @@ import {
 
 const reviewsRouter = express.Router();
 
-reviewsRouter.route("/:roomId").get(getReviews).post(postReviews);
-
-reviewsRouter.route("/:roomId").patch(patchReviews);
-
-reviewsRouter.route("/:roomId").delete(deleteReviews);
+reviewsRouter.route("/").get(getReviews).post(postReviews).patch(patchReviews).delete(deleteReviews);
 
 export default reviewsRouter;
