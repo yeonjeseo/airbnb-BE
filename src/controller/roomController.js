@@ -21,7 +21,7 @@ export const getRoomsFlexible = async (req, res) => {
     - 쿼리 여러개 처리 - ok
   */
   const pageCnt = Number(page);
-  const limit = 5;
+  const limit = 10;
   const offset = (pageCnt - 1) * limit;
 
   // reduce???
