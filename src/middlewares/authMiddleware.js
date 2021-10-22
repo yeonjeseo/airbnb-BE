@@ -1,7 +1,7 @@
-import { jwt } from "jsonwebtoken";
-import { User } from "../models/User";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-export const authMiddleware = (req, res, next) => {
+export const authMiddleware = async (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
@@ -19,14 +19,12 @@ export const authMiddleware = (req, res, next) => {
   }
 
   try {
-    const { fullname } = jwt.verify(tokenValue, "airbnb-secret-key");
-    User.findById(fullname)
-      .then((user) => {
-        req.locals.user = user;
-        next();
-      })
-      .catch((err) => console.log(err));
+    const { _id } = jwt.verify(tokenValue, "airbnb-secret-key");
+    const user = await User.findById(_id);
+    req.user = user;
+    next();
   } catch (err) {
+    console.log(err);
     res.status(401).send({
       errorMessage: "로그인 후 이용 가능한 기능입니다.",
     });

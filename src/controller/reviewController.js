@@ -1,6 +1,7 @@
 import Review from "../models/Review.js";
 import mongoose from "mongoose";
 import Room from "../models/Room.js";
+import User from "../models/User.js";
 
 // import { authMiddleware} from "../middlwares/Authentication";
 //get, post, patch, delete + Review 고치기
@@ -20,7 +21,9 @@ import Room from "../models/Room.js";
 // postingID => 변경
 export const postReviews = async (req, res) => {
   const { roomId } = req.params;
-  const { userId, comment, rating } = req.body;
+  const { user } = req;
+  console.log(user);
+  const { comment, rating } = req.body;
 
   const date = new Date();
   const year = date.getFullYear();
@@ -30,7 +33,7 @@ export const postReviews = async (req, res) => {
 
   try {
     const review = {
-      userId,
+      userId: user._id,
       roomId,
       comment,
       rating,
