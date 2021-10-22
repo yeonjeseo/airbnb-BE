@@ -1,6 +1,7 @@
 import Room from "../models/Room.js";
 import Review from "../models/Review.js";
 import Reseravation from "../models/Reservation.js";
+import mongoose from "mongoose";
 
 export const getRoomsFlexible = async (req, res) => {
   const {
@@ -142,11 +143,15 @@ export const postRooms = async (req, res) => {
 // 방 1개와 그 댓글들 조회
 export const getOneRoom = async (req, res) => {
   const { roomId } = req.params;
+  console.log(roomId);
   try {
     const room = await Room.findById(roomId);
-    const reviews = await Review.find({ homeId: roomId }).sort({
+    const reviews = await Review.find({
+      roomId: { $eq: roomId },
+    }).sort({
       createdAt: -1,
     });
+    console.log(reviews);
     return res.status(200).send({ result: "success", room, reviews });
   } catch (error) {
     console.log(error);

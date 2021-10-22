@@ -77,11 +77,9 @@ export const auth_phone = async (req, res) => {
       return res
         .status(400)
         .send({ result: "failure", msg: "비밀번호가 틀립니다." });
+
     const { _id } = user;
-    const token = jwtToken.sign(
-      { fullname: user.fullname },
-      "airbnb-secret-key"
-    );
+    const token = jwtToken.sign({ _id }, "airbnb-secret-key");
     return res
       .status(200)
       .send({ result: "success", msg: "로그인 완료", token });
@@ -105,10 +103,7 @@ export const auth_email = async (req, res) => {
         .status(400)
         .send({ result: "failure", msg: "아이디 혹은 비밀번호가 틀립니다." });
     const { _id } = user;
-    const token = jwtToken.sign(
-      { fullname: user.fullname },
-      "airbnb-secret-key"
-    );
+    const token = jwtToken.sign({ _id }, "airbnb-secret-key");
     return res
       .status(200)
       .send({ result: "success", msg: "로그인 완료", token });

@@ -9,6 +9,7 @@ import {
   patchReviews,
   deleteReviews,
 } from "../controller/reviewController.js";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
 
 const roomsRouter = express.Router();
 
@@ -17,7 +18,7 @@ roomsRouter.route("/:roomId").get(getOneRoom);
 // roomsRouter.use("/:roomId/reviews", reviewsRouter);
 roomsRouter
   .route("/:roomId/reviews")
-  .post(postReviews)
+  .post(authMiddleware, postReviews)
   .delete(deleteReviews)
   .patch(patchReviews);
 
