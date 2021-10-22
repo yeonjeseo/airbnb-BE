@@ -34,6 +34,7 @@ export const getRoomsFlexible = async (req, res) => {
   if (pet == "true") findQuery += `&& this.pet == ${true} `;
   if (smoking == "true") findQuery += `&& this.smoking == ${true} `;
 
+  // category가 없을 경우, string 제일 앞 && 제거
   let queryArray = findQuery.split(" ");
   if (queryArray[0] == "&&") {
     queryArray.shift();
@@ -58,8 +59,8 @@ export const getRoomsFlexible = async (req, res) => {
         .limit(limit)
         .skip(offset)
         .sort({ distance: 1 });
-      // const totalPageCnt = parseInt(roomsTotal.length / limit);
 
+      //나머지가 있으면 페이지 수 + 1 아니면 몫
       const totalPageCnt =
         roomsTotal.length % limit == 0
           ? parseInt(roomsTotal.length / limit)

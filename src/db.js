@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 
 mongoose.connect(
-  // "mongodb://yeonje:6350@0.0.0.0:27017/airbnb?authSource=admin",
-  "mongodb://localhost:27017/airnbn",
+  "mongodb://yeonje:6350@0.0.0.0:27017/airbnb?authSource=admin",
+  // "mongodb://localhost:27017/airnbn",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,

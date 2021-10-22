@@ -4,14 +4,16 @@ const { Schema } = mongoose;
 
 const reviewSchema = new Schema({
   userId: {
-    type: String,
-  },
-  review: {
-    type: String,
+    type: mongoose.Types.ObjectId,
     required: true,
   },
-  upperPost: {
+  roomId: {
+    type: mongoose.Types.ObjectId,
+    required: true,
+  },
+  comment: {
     type: String,
+    required: true,
   },
   rating: {
     type: Number,
