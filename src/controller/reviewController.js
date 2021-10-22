@@ -28,23 +28,27 @@ export const postReviews = async (req, res) => {
   const day = date.getDate();
   const createdAt = [year, month, day].join("-");
 
-  const review = {
-    userId,
-    roomId,
-    comment,
-    rating,
-    createdAt,
-  };
-
   try {
-    await Review.create({ review });
+    const review = {
+      userId,
+      roomId,
+      comment,
+      rating,
+      createdAt,
+    };
+
+    await Review.create(review);
 
     const reviews = await Review.find({ roomId });
+    let avg = 0;
     let sum = 0;
-    reviews.forEach((review) => {
-      sum += review.rating;
-    });
-    const avg = (sum / reviews.length).toFixed(2);
+    if (reviews.length !== 0) {
+      reviews.forEach((review) => {
+        sum += review.rating;
+      });
+      avg = (sum / reviews.length).toFixed(2);
+    }
+
     await Room.findByIdAndUpdate(roomId, { $set: { rating: avg } });
     return res.status(200).send({ result: "success" });
   } catch (err) {
