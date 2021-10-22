@@ -12,7 +12,7 @@ const reviewSchema = new Schema({
     type: String,
     required: true,
   },
-  upperPost: {
+  roomId: {
     type: String,
   },
   rating: {

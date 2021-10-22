@@ -10,7 +10,7 @@ export const getReviews = async (req, res) => {
   const { homeId, reviewId } = req.params;
 
   try {
-    const review = await Review.find({ upperPost: roomId }).sort("-_id");
+    const review = await Review.find({ roomId: roomId }).sort("-_id");
     res.status(200).send({ review: review });
   } catch (err) {
     res.status(400).send({ err: "리뷰 에러" });
@@ -20,7 +20,7 @@ export const getReviews = async (req, res) => {
 // postingID => 변경
 export const postReviews = async (req, res) => {
   const { roomId } = req.params;
-  const { userId, review } = req.body;
+  const { userId, review, rating } = req.body;
 
   const date = new Date();
   const year = date.getFullYear();
@@ -32,9 +32,9 @@ export const postReviews = async (req, res) => {
     await Review.create({
       userId: userId,
       review: review,
-      upperPost: roomId,
-      createdAt: dateString,
+      roomId: roomId,
       rating: rating,
+      createdAt: dateString,
     });
 
     const reviews = await Review.find({ roomId });
@@ -42,9 +42,10 @@ export const postReviews = async (req, res) => {
     reviews.forEach((review) => {
       sum += review.rating;
     });
+    console.log(sum);
     const avg = sum / reviews.length;
     await Room.findByIdAndUpdate(roomId, { $set: { rating: avg } });
-    res.status(200).send({ result: "success" });
+    return res.status(200).send({ result: "success" });
   } catch (err) {
     console.log(err);
     res.status(400).send({ err: "err" });
