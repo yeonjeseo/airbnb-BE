@@ -25,7 +25,6 @@ export const getRoomsFlexible = async (req, res) => {
   const limit = 10;
   const offset = (pageCnt - 1) * limit;
 
-  // reduce???
   let findQuery = "";
   if (category) findQuery += `this.category == '${category}' `;
   if (guests) findQuery += `&& this.people > ${guests} `;
@@ -43,9 +42,9 @@ export const getRoomsFlexible = async (req, res) => {
   }
 
   try {
-    let notAvailList = [];
+    const notAvailList = [];
     if (check_in && check_out) {
-      //체크인 체크아웃이 있으면 예약불가능한 방을 조회
+      // 쿼리 스트링에 체크인 체크아웃이 있으면 예약불가능한 방을 조회
       const roomsNotAvailable = await Reseravation.find({
         $and: [{ start: { $lt: check_out } }, { end: { $gt: check_in } }],
       });
