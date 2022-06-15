@@ -1,7 +1,7 @@
-import Room from "../models/Room.js";
-import Review from "../models/Review.js";
-import Reseravation from "../models/Reservation.js";
-import mongoose from "mongoose";
+import Room from '../models/Room.js';
+import Review from '../models/Review.js';
+import Reseravation from '../models/Reservation.js';
+import db from '../db.js';
 
 export const getRoomsFlexible = async (req, res) => {
   const {
@@ -25,20 +25,20 @@ export const getRoomsFlexible = async (req, res) => {
   const limit = 10;
   const offset = (pageCnt - 1) * limit;
 
-  let findQuery = "";
+  let findQuery = '';
   if (category) findQuery += `this.category == '${category}' `;
   if (guests) findQuery += `&& this.people > ${guests} `;
-  if (english == "true") findQuery += `&& this.english == ${true} `;
-  if (korean == "true") findQuery += `&& this.korean == ${true} `;
-  if (deutch == "true") findQuery += `&& this.deutch == ${true} `;
-  if (pet == "true") findQuery += `&& this.pet == ${true} `;
-  if (smoking == "true") findQuery += `&& this.smoking == ${true} `;
+  if (english == 'true') findQuery += `&& this.english == ${true} `;
+  if (korean == 'true') findQuery += `&& this.korean == ${true} `;
+  if (deutch == 'true') findQuery += `&& this.deutch == ${true} `;
+  if (pet == 'true') findQuery += `&& this.pet == ${true} `;
+  if (smoking == 'true') findQuery += `&& this.smoking == ${true} `;
 
   // category가 없을 경우, string 제일 앞 && 제거
-  let queryArray = findQuery.split(" ");
-  if (queryArray[0] == "&&") {
+  let queryArray = findQuery.split(' ');
+  if (queryArray[0] == '&&') {
     queryArray.shift();
-    findQuery = queryArray.join(" ");
+    findQuery = queryArray.join(' ');
   }
 
   try {
@@ -53,7 +53,7 @@ export const getRoomsFlexible = async (req, res) => {
     }
     //findQuery가 비어있을 경우 $where 사용 불가능하므로 예외 처리
     //여기는 흠 list1일 경우가 될 거니까
-    if (findQuery === "") {
+    if (findQuery === '') {
       const roomsTotal = await Room.find({ _id: { $nin: notAvailList } });
       const rooms = await Room.find({ _id: { $nin: notAvailList } })
         .limit(limit)
@@ -67,7 +67,7 @@ export const getRoomsFlexible = async (req, res) => {
           : parseInt(roomsTotal.length / limit) + 1;
       return res
         .status(200)
-        .send({ result: "success", rooms, totalPageCnt, page });
+        .send({ result: 'success', rooms, totalPageCnt, page });
     }
 
     const roomsTotal = await Room.find({
@@ -85,10 +85,10 @@ export const getRoomsFlexible = async (req, res) => {
 
     return res
       .status(200)
-      .send({ result: "success", rooms, totalPageCnt, page });
+      .send({ result: 'success', rooms, totalPageCnt, page });
   } catch (error) {
     console.log(error);
-    return res.status(400).send({ result: "failure" });
+    return res.status(400).send({ result: 'failure' });
   }
 };
 
@@ -151,9 +151,47 @@ export const getOneRoom = async (req, res) => {
       createdAt: -1,
     });
     console.log(reviews);
-    return res.status(200).send({ result: "success", room, reviews });
+    return res.status(200).send({ result: 'success', room, reviews });
   } catch (error) {
     console.log(error);
-    return res.status(400).send({ result: "failure" });
+    return res.status(400).send({ result: 'failure' });
+  }
+};
+
+export const testQuery = async () => {
+  try {
+    const refLocation = [35, 35];
+    // const aggregate = await Room.aggregate([
+    //   {
+    //     $geoNear: {
+    //       spherical: true,
+    //       // maxDistance: 50000,
+    //       near: {
+    //         type: 'Point',
+    //         coordinate: [120.33, 35],
+    //       },
+    //       distanceField: 'distance',
+    //       includeLocs: 'location',
+    //     },
+    //   },
+    // ]);
+    const reservations = await Reseravation.aggregate([
+      {
+        $match: {
+          amountOfGuests: { $eq: 4 },
+        },
+      },
+      {
+        $lookup: {
+          from: 'rooms',
+          localField: 'roomId',
+          foreignField: '_id',
+          as: 'roomInfo',
+        },
+      },
+    ]).exec();
+    console.log(reservations);
+  } catch (e) {
+    console.log(e);
   }
 };

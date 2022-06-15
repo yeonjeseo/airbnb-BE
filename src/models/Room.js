@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const { Schema } = mongoose;
 
@@ -11,10 +11,7 @@ const roomSchema = new Schema({
   people: { type: Number },
   rating: { type: Number },
   imageUrl: [{ type: String }],
-  location: {
-    lat: { type: Number },
-    lon: { type: Number },
-  },
+  location: [{ type: Number }, { type: Number }],
   english: { type: Boolean },
   korean: { type: Boolean },
   deutch: { type: Boolean },
@@ -25,5 +22,5 @@ const roomSchema = new Schema({
   available: { type: String },
 });
 
-const Room = mongoose.model("Room", roomSchema);
+const Room = mongoose.model('Room', roomSchema);
 export default Room;
