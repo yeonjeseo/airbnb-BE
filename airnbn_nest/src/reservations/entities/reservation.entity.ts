@@ -20,9 +20,9 @@ export class Reservation {
     @Column('int', {name: 'amount_of_guests', nullable: false})
     amountOfGuests: number;
 
-    @Column('datetime', { name: 'created_at' })
+    @Column('datetime', { name: 'created_at', default: () => 'CURRENT_TIMESTAMP' })
     createdAt: Date;
 
-    @Column('datetime', { name: 'updated_at' })
+    @Column('datetime', { name: 'updated_at', default: () => 'CURRENT_TIMESTAMP' })
     updatedAt: Date;
 }

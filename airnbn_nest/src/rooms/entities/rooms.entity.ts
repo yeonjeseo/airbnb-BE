@@ -57,4 +57,10 @@ export class Room {
 
     @Column('boolean', {name: 'available', nullable: false, default: true})
     available: boolean;
+
+    @Column('datetime', { name: 'created_at', default: () => 'CURRENT_TIMESTAMP' })
+    createdAt: Date;
+
+    @Column('datetime', { name: 'updated_at', default: () => 'CURRENT_TIMESTAMP' })
+    updatedAt: Date;
 }
