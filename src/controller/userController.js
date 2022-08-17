@@ -31,8 +31,8 @@ export const signup = async (req, res) => {
       errorMessage: "생년월일의 형식이 일치하지 않습니다.",
     });
   }
+
   try {
-    console.log(email);
     const isExisting = await User.find({ email }); //둘중 하나가 User 몽고DB에 존재하는지 여부 확인
     if (isExisting.length)
       //둘중 하나라도 존재하면 1이상의 값이 나오므로 true로 처리해서 아래 값을 return
